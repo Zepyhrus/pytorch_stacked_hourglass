@@ -11,3 +11,5 @@ _ext
 tmp
 *.o*
 *~
+*.gz
+*.zip

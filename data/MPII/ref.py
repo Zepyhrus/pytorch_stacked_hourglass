@@ -1,6 +1,7 @@
 import numpy as np
 import h5py
-from scipy.misc import imread
+# from scipy.misc import imread // imread is removed after scipy >= 1.2.0
+from imageio import imread
 import os 
 import time
 
