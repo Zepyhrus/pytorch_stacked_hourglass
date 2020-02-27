@@ -22,9 +22,8 @@ __config__ = {
         'num_eval': 2958, ## number of val examples used. entire set is 2958
         'train_num_eval': 300, ## number of train examples tested at test time
     },
-
     'train': {
-        'batchsize': 16,
+        'batchsize': 1,
         'input_res': 256,
         'output_res': 64,
         'train_iters': 1000,
@@ -90,8 +89,10 @@ def make_network(configs):
     exp_path = os.path.join('exp', configs['opt'].exp)
     if configs['opt'].exp=='pose' and configs['opt'].continue_exp is not None:
         exp_path = os.path.join('exp', configs['opt'].continue_exp)
+    
     if not os.path.exists(exp_path):
         os.mkdir(exp_path)
+    
     logger = open(os.path.join(exp_path, 'log'), 'a+')
 
     def make_train(batch_id, config, phase, **inputs):
@@ -149,4 +150,5 @@ def make_network(configs):
                 result = [result]
             out['preds'] = [make_output(i) for i in result]
             return out
+    
     return make_train

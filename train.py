@@ -113,7 +113,7 @@ def init():
     config['opt'] = opt
     config['data_provider'] = importlib.import_module(config['data_provider'])
 
-    func = task.make_network(config)
+    func = task.make_network(config) # this is where the network generates
     reload(config)
     return func, config
 

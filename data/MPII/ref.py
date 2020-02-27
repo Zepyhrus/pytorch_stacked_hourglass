@@ -1,7 +1,6 @@
 import numpy as np
 import h5py
-# from scipy.misc import imread // imread is removed after scipy >= 1.2.0
-from imageio import imread
+import cv2
 import os 
 import time
 
@@ -91,7 +90,9 @@ def setup_val_split():
 def get_img(idx):
     imgname, __, __, __, __, __ = mpii.getAnnots(idx)
     path = os.path.join(img_dir, imgname)
-    img = imread(path, mode='RGB')
+    # img = imread(path, mode='RGB') // changed to opencv
+    img = cv2.imread(path)[:, :, ::-1]
+
     return img
 
 def get_path(idx):

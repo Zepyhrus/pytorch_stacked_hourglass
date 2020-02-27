@@ -24,6 +24,22 @@ Structure:
 - ```train.py```: code for model training
 - ```test.py```: code for model evaluation
 
+### Compatibility Problem
+
+重新修改代码，使其兼容Scipy>=1.3.0，pytorch>=1.1.0，并且将所有图片的操作都更改为opencv。初步采用2层Hourglass网络。
+
+#### Opencv与Scipy.image的兼容问题
+
+需要明确的一点是，Opencv与Scipy.image包存在比较大的差异，即便是简单如`imread`的函数，在相同的图片下依旧在像素值上有不小的差异。以照片`images/timg.jpeg`这张430\*600\*3的图片为例：
+ * 共计774,000个像素；
+ * 读取的numpy像素值差绝对值之和为203,566，基本相当于1/3的像素都相差1左右；
+ * 像素值差的均方根为0.83，相当于几乎每个像素都差1；
+
+需要注意的是：
+ * 采用opencv后，在原先采用scipy.image训练出的模型下，会导致精度略微下降，大约在1%左右；
+
+
+
 #### Dataset
 Download the full [MPII Human Pose dataset](http://human-pose.mpi-inf.mpg.de/), and place the images directory in data/MPII/
 
