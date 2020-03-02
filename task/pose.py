@@ -78,8 +78,8 @@ def make_network(configs):
         return poseNet.calc_loss(*args, **kwargs)
     
     ## creating new posenet
-    PoseNet = importNet(configs['network'])
-    poseNet = PoseNet(**config)
+    PoseNet = importNet(configs['network']) # here is a Module class, not a module
+    poseNet = PoseNet(**config) # poseNet is a module
     forward_net = DataParallel(poseNet.cuda())
     config['net'] = Trainer(forward_net, configs['inference']['keys'], calc_loss)
     

@@ -61,8 +61,11 @@ class Residual(nn.Module):
 
 class Hourglass(nn.Module):
     def __init__(self, n, f, bn=None, increase=0):
+        # n: HG level
+        # f: input channel size
         super(Hourglass, self).__init__()
         nf = f + increase
+        # Upper branch
         self.up1 = Residual(f, f)
         # Lower branch
         self.pool1 = Pool(2, 2)

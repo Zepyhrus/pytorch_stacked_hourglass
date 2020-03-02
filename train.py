@@ -115,6 +115,7 @@ def init():
 
     func = task.make_network(config) # this is where the network generates
     reload(config)
+    
     return func, config
 
 def main():

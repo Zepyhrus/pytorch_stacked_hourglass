@@ -17,9 +17,10 @@ class Merge(nn.Module):
     
 class PoseNet(nn.Module):
     def __init__(self, nstack, inp_dim, oup_dim, bn=False, increase=0, **kwargs):
+        # inp_dim should be 256 here, inp_dim stands for channel number
         super(PoseNet, self).__init__()
         
-        self.nstack = nstack
+        self.nstack = nstack    # number of stacks
         self.pre = nn.Sequential(
             Conv(3, 64, 7, 2, bn=True, relu=True),
             Residual(64, 128),
@@ -28,26 +29,34 @@ class PoseNet(nn.Module):
             Residual(128, inp_dim)
         )
         
-        self.hgs = nn.ModuleList( [
-        nn.Sequential(
-            Hourglass(4, inp_dim, bn, increase),
-        ) for i in range(nstack)] )
+        self.hgs = nn.ModuleList([
+            nn.Sequential(
+                Hourglass(4, inp_dim, bn, increase),
+            ) for i in range(nstack)
+        ])
         
-        self.features = nn.ModuleList( [
-        nn.Sequential(
-            Residual(inp_dim, inp_dim),
-            Conv(inp_dim, inp_dim, 1, bn=True, relu=True)
-        ) for i in range(nstack)] )
+        self.features = nn.ModuleList([
+            nn.Sequential(
+                Residual(inp_dim, inp_dim),
+                Conv(inp_dim, inp_dim, 1, bn=True, relu=True)
+            ) for i in range(nstack)
+        ])
         
-        self.outs = nn.ModuleList( [Conv(inp_dim, oup_dim, 1, relu=False, bn=False) for i in range(nstack)] )
-        self.merge_features = nn.ModuleList( [Merge(inp_dim, inp_dim) for i in range(nstack-1)] )
-        self.merge_preds = nn.ModuleList( [Merge(oup_dim, inp_dim) for i in range(nstack-1)] )
+        self.outs = nn.ModuleList([
+            Conv(inp_dim, oup_dim, 1, relu=False, bn=False) for i in range(nstack)
+        ])
+        self.merge_features = nn.ModuleList([
+            Merge(inp_dim, inp_dim) for i in range(nstack-1)
+        ])
+        self.merge_preds = nn.ModuleList([
+            Merge(oup_dim, inp_dim) for i in range(nstack-1)
+        ])
         self.nstack = nstack
         self.heatmapLoss = HeatmapLoss()
 
     def forward(self, imgs):
         ## our posenet
-        x = imgs.permute(0, 3, 1, 2) #x of size 1,3,inpdim,inpdim
+        x = imgs.permute(0, 3, 1, 2) # x of size 1,3,inpdim,inpdim
         x = self.pre(x)
         combined_hm_preds = []
         for i in range(self.nstack):
